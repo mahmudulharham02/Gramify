@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      /* Ensure window.fetch has both getter and setter so external shims and libraries never throw "Cannot set property fetch of #<Window> which has only a getter" */
+      (function () {
+        try {
+          var origDefineProperty = Object.defineProperty;
+          Object.defineProperty = function (obj, prop, descriptor) {
+            var isWindowLike =
+              obj === window ||
+              (typeof globalThis !== 'undefined' && obj === globalThis) ||
+              (typeof Window !== 'undefined' && obj === Window.prototype);
+
+            if (isWindowLike && prop === 'fetch' && descriptor) {
+              if (descriptor.get && !descriptor.set) {
+                var originalGet = descriptor.get;
+                var customFetch;
+                var hasCustomFetch = false;
+
+                return origDefineProperty(obj, prop, {
+                  get: function () {
+                    return hasCustomFetch ? customFetch : originalGet.call(this);
+                  },
+                  set: function (val) {
+                    customFetch = val;
+                    hasCustomFetch = true;
+                  },
+                  configurable: true,
+                  enumerable: descriptor.enumerable !== undefined ? descriptor.enumerable : true,
+                });
+              }
+            }
+            return origDefineProperty(obj, prop, descriptor);
+          };
+        } catch (e) {
+          // Graceful fallback
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Gramify — Master HSC English 2nd Paper</title>
+    <meta name="description" content="Gamified learning web app for Bangladesh HSC English 2nd Paper grammar covering all 10 syllabus topics with drills, XP, streaks, and analytics." />
+    <meta property="og:title" content="Gramify — Master HSC English 2nd Paper" />
+    <meta property="og:description" content="Gamified learning web app for Bangladesh HSC English 2nd Paper grammar with interactive drills and board questions." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- PWA & Mobile Meta Tags -->
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Gramify" />
+    <meta name="application-name" content="Gramify" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#0f172a] text-[#f8fafc] antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

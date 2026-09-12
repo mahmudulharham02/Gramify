@@ -1,0 +1,65 @@
+import { ShopItem } from '../types';
+
+export const SHOP_ITEMS: ShopItem[] = [
+  {
+    id: 'hints_pack_5',
+    name: '5x Hint Crystals 🪄',
+    category: 'hints',
+    cost: 15,
+    icon: '🪄',
+    description: 'Instantly eliminate 50% of wrong options or reveal key grammar clues during drills.',
+  },
+  {
+    id: 'heart_refill_full',
+    name: 'Full Heart Refill ❤️',
+    category: 'hearts',
+    cost: 20,
+    icon: '❤️',
+    description: 'Instantly restore all 5 hearts to keep practicing without delay.',
+  },
+  {
+    id: 'frame_gold_laurel',
+    name: 'Golden Laurel Frame 👑',
+    category: 'frame',
+    cost: 50,
+    icon: '👑',
+    description: 'A prestigious golden aura avatar frame for high-achieving students.',
+    frameClass: 'ring-4 ring-amber-400 shadow-lg shadow-amber-500/30',
+  },
+  {
+    id: 'frame_cyber_cyan',
+    name: 'Cyber Neon Frame ⚡',
+    category: 'frame',
+    cost: 40,
+    icon: '⚡',
+    description: 'Electric cyan pulse ring for your student avatar profile.',
+    frameClass: 'ring-4 ring-cyan-400 shadow-lg shadow-cyan-500/30',
+  },
+  {
+    id: 'frame_violet_mystic',
+    name: 'Mystic Violet Aura 🔮',
+    category: 'frame',
+    cost: 45,
+    icon: '🔮',
+    description: 'Deep ultraviolet pulsing boundary for master linguists.',
+    frameClass: 'ring-4 ring-violet-400 shadow-lg shadow-violet-500/30',
+  },
+  {
+    id: 'theme_emerald_scholar',
+    name: 'Emerald Scholar Theme 🌿',
+    category: 'theme',
+    cost: 75,
+    icon: '🌿',
+    description: 'Calm jade emerald accent colors inspired by Dhaka University lawns.',
+    previewColor: '#10b981',
+  },
+  {
+    id: 'theme_crimson_nebula',
+    name: 'Crimson Nebula Theme 🔥',
+    category: 'theme',
+    cost: 75,
+    icon: '🔥',
+    description: 'Fiery rose and amber space nebula style for energetic study sessions.',
+    previewColor: '#f43f5e',
+  }
+];

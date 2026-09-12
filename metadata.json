@@ -1,0 +1,6 @@
+{
+  "name": "Gramify",
+  "description": "Gamified learning web app for Bangladesh HSC English 2nd Paper grammar covering all 10 syllabus topics with drills, XP, streaks, and analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
