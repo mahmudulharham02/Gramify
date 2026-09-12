@@ -26,6 +26,7 @@ import { useAuth } from '../context/AuthContext';
 import { maskEmail } from '../utils/syncEngine';
 import { LoginModal } from './LoginModal';
 import { resolveAvatar } from './AvatarPickerModal';
+import { isCustomPhoto } from '../utils/imageUpload';
 import { ThemeToggle } from './ThemeToggle';
 import { PWAInstallButton } from './PWAInstallButton';
 
@@ -262,7 +263,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="bg-[#1e293b] rounded-2xl p-4 border border-white/[0.08] space-y-2">
             <div className="p-3 rounded-xl bg-slate-900 border border-white/[0.06] flex items-center justify-between mb-3">
               <div className="flex items-center gap-2.5">
-                <span className="text-[20px] leading-none select-none">{resolveAvatar(state.user.avatar)}</span>
+                <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center shrink-0 bg-slate-800 border border-white/10">
+                  {isCustomPhoto(state.user.avatar) ? (
+                    <img src={state.user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[18px] leading-none select-none">{resolveAvatar(state.user.avatar)}</span>
+                  )}
+                </div>
                 <div>
                   <span className="text-xs font-semibold text-white block">
                     {state.user.name || 'HSC Aspirant'}

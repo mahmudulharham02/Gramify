@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Volume2, VolumeX, Download, Upload, Trash2, AlertTriangle, User, ShieldCheck, MessageSquare, RotateCcw, Check, PenTool, Cloud, Activity, Smartphone } from 'lucide-react';
 import { AppState } from '../types';
 import { soundManager } from '../utils/sound';
 import { exportStateAsJSON, importStateFromJSON } from '../utils/storage';
 import { clearAllDrillModePreferences } from '../utils/modePreferences';
-import { AvatarPickerModal, resolveAvatar } from './AvatarPickerModal';
+import { AvatarPickerModal, resolveAvatar, DEFAULT_AVATAR } from './AvatarPickerModal';
+import { isCustomPhoto, resizeAndEncodeImage } from '../utils/imageUpload';
 import { ThemeToggle } from './ThemeToggle';
 import { PWAInstallButton } from './PWAInstallButton';
 import { isOnboardingAlreadySubmitted } from '../utils/formspree';
@@ -25,8 +26,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onOpenFeedback,
 }) => {
   const [name, setName] = useState(state.user.name);
-  const [avatar, setAvatar] = useState(resolveAvatar(state.user.avatar));
+  const [avatar, setAvatar] = useState(state.user.avatar || resolveAvatar(state.user.avatar));
   const [showPicker, setShowPicker] = useState(false);
+  const settingsFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const dataUrl = await resizeAndEncodeImage(file);
+      soundManager.playClick();
+      setAvatar(dataUrl);
+      onUpdateState({
+        ...state,
+        user: {
+          ...state.user,
+          avatar: dataUrl,
+        },
+      });
+    } catch (err) {
+      console.warn('Failed to process image:', err);
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  };
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [clearedPreferencesMsg, setClearedPreferencesMsg] = useState(false);
@@ -142,21 +165,72 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <div className="flex items-center justify-between pt-1">
               <div>
-                <label className="text-xs text-slate-300 font-medium block">Avatar</label>
-                <p className="text-[11px] text-slate-400">Choose your profile emoji</p>
+                <label className="text-xs text-slate-300 font-medium block">Avatar / Profile Photo</label>
+                <p className="text-[11px] text-slate-400">Custom photo or preset emoji</p>
               </div>
-              <button
-                type="button"
-                id="btn-settings-avatar-picker"
-                onClick={() => {
-                  soundManager.playClick();
-                  setShowPicker(true);
-                }}
-                className="w-12 h-12 rounded-full bg-slate-700/50 border border-white/10 hover:border-cyan-400 hover:bg-slate-700 flex items-center justify-center text-2xl transition-all active:scale-95 cursor-pointer"
-                title="Change Avatar"
-              >
-                {resolveAvatar(avatar)}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  id="btn-settings-avatar-picker"
+                  onClick={() => {
+                    soundManager.playClick();
+                    setShowPicker(true);
+                  }}
+                  className="w-12 h-12 rounded-full bg-slate-700/50 border border-white/10 hover:border-cyan-400 hover:bg-slate-700 flex items-center justify-center text-2xl overflow-hidden transition-all active:scale-95 cursor-pointer shrink-0"
+                  title="Change Avatar"
+                >
+                  {isCustomPhoto(avatar) ? (
+                    <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{resolveAvatar(avatar)}</span>
+                  )}
+                </button>
+
+                <div className="flex flex-col gap-1">
+                  <button
+                    type="button"
+                    id="btn-settings-upload-photo"
+                    onClick={() => {
+                      soundManager.playClick();
+                      settingsFileInputRef.current?.click();
+                    }}
+                    className="h-7 px-2 rounded-md bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[11px] font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <Upload className="w-3 h-3" />
+                    <span>Upload</span>
+                  </button>
+
+                  {isCustomPhoto(avatar) && (
+                    <button
+                      type="button"
+                      id="btn-settings-remove-photo"
+                      onClick={() => {
+                        soundManager.playClick();
+                        setAvatar(DEFAULT_AVATAR);
+                        onUpdateState({
+                          ...state,
+                          user: {
+                            ...state.user,
+                            avatar: DEFAULT_AVATAR,
+                          },
+                        });
+                      }}
+                      className="h-6 px-1.5 rounded-md text-[11px] text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-1 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-2.5 h-2.5" />
+                      <span>Remove</span>
+                    </button>
+                  )}
+                </div>
+
+                <input
+                  ref={settingsFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoUpload}
+                />
+              </div>
             </div>
           </div>
 

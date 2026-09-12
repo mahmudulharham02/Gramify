@@ -1,39 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { WifiOff, CloudOff, CheckCircle2, X } from 'lucide-react';
+import { WifiOff, X } from 'lucide-react';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 export const OfflineIndicator: React.FC = () => {
   const isOnline = useOnlineStatus();
   const [dismissed, setDismissed] = useState(false);
-  const [showReconnectedToast, setShowReconnectedToast] = useState(false);
 
   useEffect(() => {
     if (!isOnline) {
       setDismissed(false);
-    } else {
-      // If we just transitioned from offline to online, show a brief restored message
-      setShowReconnectedToast(true);
-      const timer = setTimeout(() => {
-        setShowReconnectedToast(false);
-      }, 3500);
-      return () => clearTimeout(timer);
     }
   }, [isOnline]);
 
-  if (isOnline && !showReconnectedToast) {
+  if (isOnline) {
     return null;
-  }
-
-  if (isOnline && showReconnectedToast) {
-    return (
-      <div
-        id="banner-online-restored"
-        className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 z-50 flex items-center gap-2.5 rounded-xl bg-emerald-950/90 border border-emerald-500/40 px-3.5 py-2 text-xs font-medium text-emerald-200 shadow-2xl backdrop-blur-md animate-fade-in"
-      >
-        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-        <span>Back online</span>
-      </div>
-    );
   }
 
   if (dismissed) {

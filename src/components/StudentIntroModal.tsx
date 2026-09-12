@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import {
   GraduationCap,
@@ -12,10 +12,14 @@ import {
   Crown,
   Flame,
   Lightbulb,
+  Upload,
+  Trash2,
+  Smile,
 } from 'lucide-react';
 import { StudentProfile } from '../types';
 import { soundManager } from '../utils/sound';
-import { AvatarPickerModal, resolveAvatar } from './AvatarPickerModal';
+import { AvatarPickerModal, resolveAvatar, DEFAULT_AVATAR } from './AvatarPickerModal';
+import { isCustomPhoto, resizeAndEncodeImage } from '../utils/imageUpload';
 import { ThemeToggle } from './ThemeToggle';
 
 interface StudentIntroModalProps {
@@ -45,8 +49,25 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
   );
   const [group, setGroup] = useState(initialProfile?.group || 'Science');
   const [board, setBoard] = useState(initialProfile?.board || 'Dhaka');
-  const [avatar, setAvatar] = useState<string>(resolveAvatar(initialProfile?.avatar));
+  const [avatar, setAvatar] = useState<string>(
+    initialProfile?.avatar || resolveAvatar(initialProfile?.avatar)
+  );
   const [showPicker, setShowPicker] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const dataUrl = await resizeAndEncodeImage(file);
+      soundManager.playClick();
+      setAvatar(dataUrl);
+    } catch (err) {
+      console.warn('Failed to upload image:', err);
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  };
   const [gender, setGender] = useState<'male' | 'female' | null>(
     initialProfile?.gender === 'male' || initialProfile?.gender === 'female'
       ? initialProfile.gender
@@ -188,30 +209,87 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
             </div>
 
             {/* Avatar Selector */}
-            <div className="space-y-1.5 flex flex-col items-center">
+            <div className="space-y-2 flex flex-col items-center">
               <label className="text-[12px] font-semibold text-[#f8fafc] block">
-                Avatar
+                Avatar / Profile Photo
               </label>
-              <button
-                type="button"
-                id="btn-intro-avatar-picker"
-                aria-label="Choose your avatar"
-                onClick={() => {
-                  soundManager.playClick();
-                  setShowPicker(true);
-                }}
-                className="
-                  w-20 h-20 rounded-full
-                  bg-slate-700/50 border-2 border-white/20
-                  hover:border-cyan-400 hover:bg-slate-700 hover:ring-2 hover:ring-cyan-400/30
-                  focus:outline-none focus:ring-2 focus:ring-cyan-400/50
-                  flex items-center justify-center
-                  text-4xl
-                  transition-all active:scale-95 cursor-pointer
-                "
-              >
-                {resolveAvatar(avatar)}
-              </button>
+              <div className="flex items-center gap-3.5">
+                <button
+                  type="button"
+                  id="btn-intro-avatar-picker"
+                  aria-label="Choose your avatar"
+                  onClick={() => {
+                    soundManager.playClick();
+                    setShowPicker(true);
+                  }}
+                  className="
+                    w-20 h-20 rounded-full
+                    bg-slate-700/50 border-2 border-white/20
+                    hover:border-cyan-400 hover:bg-slate-700 hover:ring-2 hover:ring-cyan-400/30
+                    focus:outline-none focus:ring-2 focus:ring-cyan-400/50
+                    flex items-center justify-center
+                    text-4xl overflow-hidden shrink-0
+                    transition-all active:scale-95 cursor-pointer
+                  "
+                >
+                  {isCustomPhoto(avatar) ? (
+                    <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{resolveAvatar(avatar)}</span>
+                  )}
+                </button>
+
+                <div className="flex flex-col gap-1.5">
+                  <button
+                    type="button"
+                    id="btn-intro-upload-photo"
+                    onClick={() => {
+                      soundManager.playClick();
+                      fileInputRef.current?.click();
+                    }}
+                    className="h-8 px-3 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload Photo</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    id="btn-intro-choose-preset"
+                    onClick={() => {
+                      soundManager.playClick();
+                      setShowPicker(true);
+                    }}
+                    className="h-7 px-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-700 border border-white/10 text-[11px] font-medium text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Smile className="w-3 h-3 text-amber-400" />
+                    <span>Preset Avatars</span>
+                  </button>
+
+                  {isCustomPhoto(avatar) && (
+                    <button
+                      type="button"
+                      id="btn-intro-remove-photo"
+                      onClick={() => {
+                        soundManager.playClick();
+                        setAvatar(DEFAULT_AVATAR);
+                      }}
+                      className="h-6 px-2 rounded-lg text-[11px] font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-1 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      <span>Remove Photo</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
             </div>
 
             {/* Name Input */}

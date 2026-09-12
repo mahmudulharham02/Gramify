@@ -39,7 +39,7 @@ const SHORT_TITLES: Record<string, string> = {
   tag_questions_and_special: 'Tag Questions',
 };
 
-export function getTopicIcon(topicId: string, className = 'w-6 h-6 text-cyan-400') {
+export function getTopicIcon(topicId: string, className = 'w-7 h-7 text-cyan-400') {
   switch (topicId) {
     case 'changing_sentences':
       return <Crown className={className} />;
@@ -214,32 +214,27 @@ export const TopicsLibrary: React.FC<TopicsLibraryProps> = ({
                 soundManager.playClick();
                 onSelectTopic(topic.id);
               }}
-              className="h-[116px] p-3 rounded-xl bg-[#1e293b] border border-white/[0.08] hover:border-cyan-500/40 hover:bg-slate-800/80 transition-all flex flex-col justify-between cursor-pointer select-none group"
+              className="h-[108px] p-3 sm:p-3.5 rounded-[12px] bg-[#1e293b] border border-white/[0.08] hover:border-[#0ea5e9]/30 hover:bg-slate-800/60 transition-all flex flex-col justify-between cursor-pointer select-none group"
             >
-              {/* Top micro row: 10px font, uppercase, muted slate */}
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-semibold text-slate-400 font-mono leading-none">
+              {/* Top thin row: topic number on left, MCQ count in center, marks badge on right */}
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-wide font-semibold text-slate-400 font-mono leading-none">
                 <span>Topic {topic.number} of 10</span>
                 <span>{questionCount} MCQs</span>
-                <span className="text-cyan-400">{topic.marks} Marks</span>
+                <span>{topic.marks} Marks</span>
               </div>
 
-              {/* Main content row: 36x36 icon + nowrap title + 1-line description */}
+              {/* Middle row: 28px flat cyan icon (no circular background) + semibold white title */}
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-9 h-9 shrink-0 flex items-center justify-center text-cyan-400">
-                  {getTopicIcon(topic.id, 'w-6 h-6 text-cyan-400')}
+                <div className="w-7 h-7 shrink-0 flex items-center justify-center text-[#0ea5e9]">
+                  {getTopicIcon(topic.id, 'w-7 h-7 text-[#0ea5e9]')}
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h2 className="text-base font-semibold text-white truncate leading-tight">
-                    {shortTitle}
-                  </h2>
-                  <p className="text-xs text-slate-400 truncate mt-0.5 leading-tight">
-                    {topic.description}
-                  </p>
-                </div>
+                <h2 className="text-[15px] sm:text-base font-semibold text-white truncate leading-tight flex-1 min-w-0">
+                  {topic.title}
+                </h2>
               </div>
 
-              {/* Bottom action row: Status badge on left + compact button on right */}
-              <div className="flex items-center justify-between pt-1.5 border-t border-white/[0.06]">
+              {/* Bottom row: status badge on left + compact rounded-full Start button on right */}
+              <div className="flex items-center justify-between gap-2">
                 <div>
                   {isMastered ? (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 font-mono">
@@ -266,9 +261,9 @@ export const TopicsLibrary: React.FC<TopicsLibraryProps> = ({
                     soundManager.playClick();
                     onSelectTopic(topic.id);
                   }}
-                  className="h-8 px-3 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center gap-1 transition-colors shadow-sm active:scale-95 cursor-pointer"
+                  className="h-[36px] px-4 rounded-full bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-sm active:scale-95 cursor-pointer select-none"
                 >
-                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  <Zap className="w-3.5 h-3.5 text-white fill-current" />
                   <span>Start</span>
                 </button>
               </div>

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Copy,
   Check,
   Download,
   Upload,
+  Trash2,
   Trophy,
   Award,
   Flame,
@@ -32,7 +33,8 @@ import { soundManager } from '../utils/sound';
 import { getMasteryTier } from '../utils/storage';
 import { getExamHistory, LastHourPrepAttempt } from '../utils/examGenerator';
 import { getDashboardTopicIcon } from './HomeDashboard';
-import { AvatarPickerModal, resolveAvatar } from './AvatarPickerModal';
+import { AvatarPickerModal, resolveAvatar, DEFAULT_AVATAR } from './AvatarPickerModal';
+import { isCustomPhoto, resizeAndEncodeImage } from '../utils/imageUpload';
 import { useAuth } from '../context/AuthContext';
 import { maskEmail, formatLastSynced, syncProfileToSupabase } from '../utils/syncEngine';
 import { LoginModal } from './LoginModal';
@@ -66,6 +68,21 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [copiedRoll, setCopiedRoll] = useState(false);
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const dataUrl = await resizeAndEncodeImage(file);
+      soundManager.playClick();
+      handleSaveAvatar(dataUrl);
+    } catch (err) {
+      console.warn('Failed to upload photo:', err);
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  };
 
   const handleSaveAvatar = (newAvatar: string) => {
     if (onUpdateAvatar) {
@@ -194,7 +211,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {/* Profile Header Card */}
       <div className="rounded-xl p-4 sm:p-5 border border-white/[0.08] bg-slate-800/80 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-          {/* Avatar Trigger Button */}
+          {/* Avatar Trigger Button & Actions */}
           <div className="flex flex-col items-center shrink-0">
             <span className="text-[12px] font-semibold text-white block mb-1.5">
               Avatar
@@ -214,16 +231,61 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   hover:border-cyan-400 hover:bg-slate-700 hover:ring-2 hover:ring-cyan-400/30
                   focus:outline-none focus:ring-2 focus:ring-cyan-400/50
                   flex items-center justify-center
-                  text-4xl
+                  text-4xl overflow-hidden
                   transition-all active:scale-95 cursor-pointer
                 "
               >
-                {resolveAvatar(state.user.avatar)}
+                {isCustomPhoto(state.user.avatar) ? (
+                  <img src={state.user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span>{resolveAvatar(state.user.avatar)}</span>
+                )}
               </button>
               <div className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-md bg-cyan-500 text-slate-950 text-[10px] font-bold shadow pointer-events-none">
                 Lvl {state.level}
               </div>
             </div>
+
+            {/* Upload / Remove Buttons */}
+            <div className="flex items-center gap-1.5 mt-2">
+              <button
+                id="btn-profile-upload-photo"
+                type="button"
+                onClick={() => {
+                  soundManager.playClick();
+                  photoInputRef.current?.click();
+                }}
+                className="px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                title="Upload photo from camera roll or files"
+              >
+                <Upload className="w-3 h-3" />
+                <span>Upload</span>
+              </button>
+
+              {isCustomPhoto(state.user.avatar) && (
+                <button
+                  id="btn-profile-remove-photo"
+                  type="button"
+                  onClick={() => {
+                    soundManager.playClick();
+                    handleSaveAvatar(DEFAULT_AVATAR);
+                  }}
+                  className="px-2 py-1 rounded-lg text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 flex items-center gap-1 transition-colors cursor-pointer"
+                  title="Remove uploaded photo and revert to default avatar"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>Remove</span>
+                </button>
+              )}
+            </div>
+
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoUpload}
+            />
           </div>
 
           {/* Profile Info */}

@@ -16,7 +16,9 @@ import {
   Shuffle,
   Sliders,
   HelpCircle,
-  Hash
+  Hash,
+  User,
+  CheckCircle2
 } from 'lucide-react';
 import { AppState, CurrentDrillSession } from '../types';
 import { TOPICS_DATA } from '../data/topics';
@@ -32,6 +34,7 @@ import {
   WeakSpotInfo
 } from '../utils/storage';
 import { resolveAvatar } from './AvatarPickerModal';
+import { isCustomPhoto } from '../utils/imageUpload';
 
 interface HomeDashboardProps {
   state: AppState;
@@ -93,6 +96,11 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   const weakestSubModule = getWeakestSubModule(state);
   const isZeroHearts = state.hearts <= 0;
 
+  const isHighLevel = state.level >= 3;
+  const hasUploadedPhoto = isCustomPhoto(state.user.avatar);
+  const studentName = (state.user.name || '').trim();
+  const firstLetter = studentName ? studentName.charAt(0).toUpperCase() : '';
+
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -123,6 +131,67 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
 
       {/* PWA Native App Install Banner */}
       <PWAInstallButton variant="banner" />
+
+      {/* ========================================================================= */}
+      {/* PROFILE PROGRESS CARD (FIX 1)                                             */}
+      {/* ========================================================================= */}
+      <div
+        id="dashboard-profile-progress-card"
+        onClick={() => {
+          soundManager.playClick();
+          onNavigate('profile');
+        }}
+        className="h-[76px] p-3 sm:p-3.5 rounded-[12px] bg-[#1e293b] border border-white/[0.08] hover:border-cyan-500/30 transition-all flex items-center justify-between gap-3 cursor-pointer select-none group"
+      >
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          {/* 48px circular avatar */}
+          <div
+            className={`w-12 h-12 rounded-full shrink-0 flex items-center justify-center overflow-hidden bg-slate-800 border border-white/10 ${
+              isHighLevel
+                ? 'ring-2 ring-cyan-400/60 ring-offset-2 ring-offset-[#1e293b] shadow-[0_0_8px_rgba(6,182,212,0.25)]'
+                : 'ring-1 ring-white/10'
+            }`}
+          >
+            {hasUploadedPhoto ? (
+              <img
+                src={state.user.avatar}
+                alt={state.user.name || 'Profile'}
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            ) : state.user.avatar && state.user.avatar !== '🧑🎓' && state.user.avatar !== 'cap' ? (
+              <span className="text-2xl leading-none select-none">{state.user.avatar}</span>
+            ) : firstLetter ? (
+              <span className="text-lg font-bold text-cyan-300 font-mono select-none">{firstLetter}</span>
+            ) : (
+              <User className="w-5 h-5 text-slate-400" />
+            )}
+          </div>
+
+          {/* Name, Level, and XP progress bar */}
+          <div className="min-w-0 flex-1 flex flex-col justify-center">
+            {/* Top row: Name · Level X on left, XP numbers on right */}
+            <div className="flex items-center justify-between gap-2 leading-none">
+              <h2 className="text-sm font-semibold text-white truncate">
+                {state.user.name || 'HSC Aspirant'} <span className="text-slate-400 font-normal">·</span> <span className="text-cyan-400 font-semibold">Level {state.level}</span>
+              </h2>
+              <span className="text-[11px] text-slate-400 font-mono font-medium shrink-0 leading-none">
+                {state.xp} / {requiredXP} XP
+              </span>
+            </div>
+
+            {/* Bottom row: Thin XP progress bar */}
+            <div className="w-full h-1.5 bg-slate-700/80 rounded-full overflow-hidden mt-2">
+              <div
+                className="h-full bg-cyan-400 rounded-full transition-all duration-300"
+                style={{ width: `${xpProgressPercent}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all shrink-0" />
+      </div>
 
       {/* ========================================================================= */}
       {/* ZONE 1 — QUICK ACTIONS (COMPACT SINGLE ROW)                               */}
@@ -239,42 +308,28 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
           </button>
         </div>
       ) : (
-        /* Completed Today / Welcome Summary Row */
+        /* Completed Today Challenge Banner */
         <div
-          id="hero-profile-banner"
-          className="rounded-xl bg-slate-800/80 border border-white/[0.08] p-3 sm:p-4 flex items-center justify-between gap-3"
+          id="priority-card-daily-completed"
+          className="rounded-xl bg-slate-800/80 border border-emerald-500/30 p-3 sm:p-4 flex items-center justify-between gap-3"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <div
-              onClick={() => {
-                soundManager.playClick();
-                onNavigate('profile');
-              }}
-              className="w-9 h-9 rounded-lg bg-slate-700 border border-white/[0.08] flex items-center justify-center text-lg cursor-pointer hover:border-cyan-500/40 shrink-0 select-none leading-none"
-            >
-              <span>{resolveAvatar(state.user.avatar)}</span>
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold text-white truncate">
-                  {state.user.name || 'HSC Aspirant'}
-                </h2>
-                <span className="text-[10px] font-semibold text-cyan-400 bg-cyan-950/60 px-1.5 py-0.2 rounded border border-cyan-500/20">
-                  Lvl {state.level}
+                <span className="text-[10px] font-semibold uppercase text-emerald-400">
+                  Daily Challenge
+                </span>
+                <span className="text-[10px] text-amber-400 font-semibold flex items-center gap-0.5">
+                  <Flame className="w-3 h-3 fill-amber-400" />
+                  {state.streak} Days
                 </span>
               </div>
-              {/* XP Progress Bar */}
-              <div className="flex items-center gap-2 mt-1 w-36 sm:w-48">
-                <div className="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-cyan-500 rounded-full transition-all"
-                    style={{ width: `${xpProgressPercent}%` }}
-                  />
-                </div>
-                <span className="text-[10px] text-slate-400 font-mono shrink-0">
-                  {state.xp}/{requiredXP} XP
-                </span>
-              </div>
+              <h2 className="text-sm font-semibold text-white truncate">
+                Today's 10-Topic Board Challenge Completed!
+              </h2>
             </div>
           </div>
 
@@ -284,7 +339,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
               soundManager.playClick();
               onNavigate('practice_hub');
             }}
-            className="px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs shrink-0 transition-colors flex items-center gap-1"
+            className="px-3.5 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs shrink-0 transition-colors flex items-center gap-1 cursor-pointer"
           >
             <span>Drills</span>
             <ChevronRight className="w-3.5 h-3.5" />

@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Camera, Upload, Trash2 } from 'lucide-react';
 import { soundManager } from '../utils/sound';
+import { isCustomPhoto, resizeAndEncodeImage } from '../utils/imageUpload';
+
+export { isCustomPhoto };
 
 /**
  * Exactly 30 emoji options for the student avatar roster
@@ -48,12 +52,27 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   onClose,
 }) => {
   const [tempAvatar, setTempAvatar] = useState<string>(() => resolveAvatar(currentAvatar));
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       setTempAvatar(resolveAvatar(currentAvatar));
     }
   }, [isOpen, currentAvatar]);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const dataUrl = await resizeAndEncodeImage(file);
+      soundManager.playClick();
+      setTempAvatar(dataUrl);
+    } catch (err) {
+      console.warn('Failed to process image:', err);
+    } finally {
+      if (e.target) e.target.value = '';
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -97,16 +116,63 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
           </button>
         </div>
 
-        {/* Current selection preview */}
-        <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-slate-800/50">
-          <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center text-3xl shrink-0">
-            {tempAvatar}
+        {/* Current selection preview with Upload / Remove options */}
+        <div className="flex items-center justify-between gap-3 mb-4 p-3 rounded-xl bg-slate-800/50 border border-white/[0.06]">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center text-3xl shrink-0 overflow-hidden border border-white/10">
+              {isCustomPhoto(tempAvatar) ? (
+                <img src={tempAvatar} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <span>{tempAvatar}</span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm text-white font-medium truncate">
+                {isCustomPhoto(tempAvatar) ? 'Custom Photo' : 'Preset Avatar'}
+              </p>
+              <p className="text-xs text-slate-400">
+                {isCustomPhoto(tempAvatar) ? 'Photo ready to save' : 'Tap an emoji or upload photo'}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-white font-medium">Selected</p>
-            <p className="text-xs text-slate-400">Tap an emoji below to choose</p>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              id="btn-modal-upload-photo"
+              onClick={() => {
+                soundManager.playClick();
+                fileInputRef.current?.click();
+              }}
+              className="h-8 px-2.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Upload Photo</span>
+            </button>
+            {isCustomPhoto(tempAvatar) && (
+              <button
+                type="button"
+                id="btn-modal-remove-photo"
+                onClick={() => {
+                  soundManager.playClick();
+                  setTempAvatar(DEFAULT_AVATAR);
+                }}
+                className="h-8 px-2 rounded-lg text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
+                title="Remove photo"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileUpload}
+        />
 
         {/* Emoji Grid (6 cols on mobile, 8 on desktop) */}
         <div className="grid grid-cols-6 md:grid-cols-8 gap-2 max-h-[300px] overflow-y-auto p-1">
