@@ -370,10 +370,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                     <div>
                       <span className="text-cyan-300 font-semibold block text-xs">
-                        Login to Sync
+                        Cloud Sync (Upcoming)
                       </span>
                       <span className="text-[10px] text-slate-400 block">
-                        Backup your progress
+                        Progress saved on this device
                       </span>
                     </div>
                   </div>

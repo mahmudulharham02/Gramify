@@ -94,6 +94,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ onFinish }) =>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Local Storage Privacy Notice */}
+        <p className="text-[11px] text-slate-400 text-center leading-normal">
+          Your data is stored locally on this device. We do not collect or transmit your personal information.
+        </p>
       </div>
     </div>
   );

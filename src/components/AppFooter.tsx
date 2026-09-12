@@ -33,6 +33,12 @@ export const AppFooter: React.FC<AppFooterProps> = ({ hidden = false, onToast })
           <span className="text-slate-400 text-[11px] hidden sm:inline">• HSC English 2nd Paper Quest</span>
         </div>
 
+        {/* Local Storage Status */}
+        <div className="flex items-center gap-1.5 text-xs text-slate-400">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span>Progress saved on this device</span>
+        </div>
+
         {/* TechValiy Badge */}
         <div className="flex items-center justify-center">
           <a

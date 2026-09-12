@@ -270,7 +270,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Backup Data Export & Import */}
           <div className="space-y-2 bg-slate-800/80 p-3.5 rounded-xl border border-white/[0.08]">
             <h3 className="text-[11px] font-bold uppercase tracking-wider text-cyan-400">
-              Data Backup & Sync
+              Data Backup & Transfer
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed">
               Export your full progress (XP, streak, wrong questions, badges) to a JSON file to transfer between devices.
@@ -306,9 +306,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <span>About Cloud Sync</span>
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              The application will soon incorporate{' '}
-              <strong className="font-semibold text-white">authentication functionality</strong> and{' '}
-              <strong className="font-semibold text-white">store user data</strong>. This is an upcoming feature, not yet available.
+              All progress is currently stored locally on this device. Cloud sync is an upcoming feature, not yet live.
             </p>
           </div>
 

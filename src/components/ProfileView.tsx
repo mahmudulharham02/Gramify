@@ -136,14 +136,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   Logged in as <span className="font-mono text-cyan-300">{maskEmail(user?.email)}</span>
                 </span>
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  Cloud Active
+                  Saved on Device
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Last synced:{' '}
-                <span className="text-slate-300 font-medium">
-                  {formatLastSynced(lastSynced || state.lastSyncedAt)}
-                </span>
+                Progress saved locally on this device
               </p>
             </div>
           </div>
@@ -172,9 +169,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <Cloud className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-sm sm:text-base font-bold text-white">Save Progress to Cloud</h2>
+              <h2 className="text-sm sm:text-base font-bold text-white">Progress Saved on This Device</h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Optional. Login with email to backup your data.
+                All data is stored in your browser's local storage. Cloud sync is not live yet.
               </p>
             </div>
           </div>
@@ -732,6 +729,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* One-line local storage privacy notice */}
+      <p className="text-[11px] text-slate-400 text-center">
+        Your data is stored locally on this device. We do not collect or transmit your personal information.
+      </p>
 
       <LoginModal
         isOpen={showLoginModal}

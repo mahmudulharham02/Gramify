@@ -361,6 +361,11 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
                 <span>{isEditing ? 'Save Profile' : 'Start Learning'}</span>
               </button>
             </div>
+
+            {/* Local Storage Privacy Notice */}
+            <p className="text-[11px] text-slate-400 text-center pt-1 leading-normal">
+              Your data is stored locally on this device. We do not collect or transmit your personal information.
+            </p>
           </form>
         ) : (
           /* 4-Slide Carousel */

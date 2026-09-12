@@ -31,7 +31,7 @@ export const OfflineIndicator: React.FC = () => {
         className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 z-50 flex items-center gap-2.5 rounded-xl bg-emerald-950/90 border border-emerald-500/40 px-3.5 py-2 text-xs font-medium text-emerald-200 shadow-2xl backdrop-blur-md animate-fade-in"
       >
         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-        <span>Back online — Syncing progress to cloud.</span>
+        <span>Back online</span>
       </div>
     );
   }
@@ -65,7 +65,7 @@ export const OfflineIndicator: React.FC = () => {
           <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
         </div>
         <p className="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
-          You are offline, but Gramify works without internet. All questions, rules, and XP are saved locally and will sync when you reconnect.
+          You are offline, but Gramify works without internet. All questions, rules, and XP are saved locally on this device.
         </p>
       </div>
 
