@@ -1,37 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="100%" stop-color="#1e293b" />
-    </linearGradient>
-    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#06b6d4" />
-      <stop offset="100%" stop-color="#3b82f6" />
-    </linearGradient>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8" />
-      <stop offset="100%" stop-color="#818cf8" />
-    </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="16" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-  </defs>
-  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
-  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="url(#cyanGrad)" stroke-width="6" stroke-opacity="0.3" />
-  
-  <!-- Stylized G and Book Emblem -->
-  <g transform="translate(106, 106)">
-    <!-- Subtle glow background circle -->
-    <circle cx="150" cy="150" r="130" fill="url(#cyanGrad)" opacity="0.15" filter="url(#glow)" />
-    
-    <!-- Open Book / Wing Motif -->
-    <path d="M 30 200 C 70 175, 120 180, 150 195 C 180 180, 230 175, 270 200 L 270 130 C 230 105, 180 110, 150 125 C 120 110, 70 105, 30 130 Z" fill="url(#cyanGrad)" opacity="0.85" />
-    
-    <!-- Stylized Modern Letter G with Lightning/Quill accent -->
-    <path d="M 150 50 C 85 50, 42 98, 42 165 C 42 232, 88 275, 158 275 C 220 275, 252 238, 255 185 L 152 185 L 152 152 L 288 152 C 290 162, 292 174, 292 186 C 292 258, 236 308, 155 308 C 65 308, 8 245, 8 165 C 8 85, 68 18, 155 18 C 205 18, 248 36, 275 68 L 246 95 C 224 70, 192 50, 150 50 Z" fill="url(#accentGrad)" />
-    
-    <!-- Academic Star Accent -->
-    <polygon points="250,45 256,62 274,62 260,73 265,90 250,80 235,90 240,73 226,62 244,62" fill="#38bdf8" />
-  </g>
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="32.000000pt" height="32.000000pt" viewBox="0 0 32.000000 32.000000"
+ preserveAspectRatio="xMidYMid meet">
+<g transform="translate(0.000000,32.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M43 307 c-28 -12 -49 -67 -31 -79 10 -6 10 -10 -2 -18 -8 -5 -10 -10
+-4 -10 12 0 12 -69 -1 -90 -5 -9 -4 -11 3 -6 7 4 12 3 12 -3 0 -5 -5 -11 -10
+-13 -7 -2 -7 -13 0 -35 14 -38 66 -65 81 -42 6 10 9 11 9 1 0 -16 142 -15 177
+1 26 11 48 70 37 95 -4 9 -9 30 -11 46 -2 17 -7 32 -12 36 -11 6 -9 35 3 47 4
+4 11 1 17 -7 7 -11 8 -9 5 10 -7 42 -16 57 -42 69 -31 14 -200 13 -231 -2z
+m167 -34 c27 -16 50 -31 50 -34 0 -3 -11 -12 -25 -19 -21 -11 -28 -10 -51 4
+-19 13 -29 15 -37 7 -21 -21 -27 -11 -12 19 9 17 13 30 11 30 -11 0 -35 -58
+-28 -65 4 -4 -3 -6 -14 -3 -20 5 -21 4 -8 -21 19 -35 18 -47 -6 -71 -11 -11
+-16 -20 -12 -20 4 0 12 4 18 10 6 6 18 4 33 -7 23 -15 23 -17 6 -30 -30 -21
+-10 -15 42 13 26 14 47 31 45 37 -2 6 7 3 19 -8 22 -20 22 -20 11 0 -7 13 -7
+26 -1 40 9 17 8 18 -3 4 -14 -17 -108 -36 -108 -22 1 17 48 41 86 45 l39 3 3
+-51 3 -50 -51 -32 c-28 -18 -54 -32 -58 -32 -11 0 -96 60 -104 73 -12 19 -9
+122 4 140 10 14 84 65 95 67 2 0 25 -12 53 -27z"/>
+<path d="M70 192 c6 -12 8 -33 5 -45 -5 -17 -4 -19 4 -7 15 21 14 33 -5 56
+-14 18 -15 18 -4 -4z"/>
+<path d="M193 78 c-20 -26 -26 -41 -15 -34 12 7 36 46 29 46 -3 0 -9 -6 -14
+-12z"/>
+</g>
 </svg>
