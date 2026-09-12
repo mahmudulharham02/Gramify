@@ -54,7 +54,7 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
   );
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
-  const isFormValid = name.trim().length > 0 && gender !== null;
+  const isFormValid = name.trim().length > 0;
 
   const triggerSave = (profile: Partial<StudentProfile>) => {
     if (typeof onSave === 'function') {
@@ -67,7 +67,7 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitAttempted(true);
-    if (!isFormValid || gender === null) return;
+    if (!isFormValid) return;
     soundManager.playClick();
 
     const finalRoll = roll.trim() ? roll.trim().slice(0, 20) : null;
@@ -187,28 +187,31 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
               </p>
             </div>
 
-            {/* Avatar picker trigger button */}
-            <div className="flex flex-col items-center justify-center py-1">
+            {/* Avatar Selector */}
+            <div className="space-y-1.5 flex flex-col items-center">
+              <label className="text-[12px] font-semibold text-[#f8fafc] block">
+                Avatar
+              </label>
               <button
                 type="button"
                 id="btn-intro-avatar-picker"
+                aria-label="Choose your avatar"
                 onClick={() => {
                   soundManager.playClick();
                   setShowPicker(true);
                 }}
                 className="
                   w-20 h-20 rounded-full
-                  bg-slate-700/50 border-2 border-white/10
-                  hover:border-cyan-400 hover:bg-slate-700
+                  bg-slate-700/50 border-2 border-white/20
+                  hover:border-cyan-400 hover:bg-slate-700 hover:ring-2 hover:ring-cyan-400/30
+                  focus:outline-none focus:ring-2 focus:ring-cyan-400/50
                   flex items-center justify-center
                   text-4xl
                   transition-all active:scale-95 cursor-pointer
                 "
-                title="Tap to change avatar"
               >
                 {resolveAvatar(avatar)}
               </button>
-              <p className="text-xs text-slate-400 mt-1">Tap to change</p>
             </div>
 
             {/* Name Input */}
@@ -244,10 +247,10 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
               />
             </div>
 
-            {/* Gender Selector (2 Options Only: Male & Female) */}
+            {/* Gender Selector (Optional) */}
             <div className="space-y-1.5">
               <label className="text-[12px] font-semibold text-[#f8fafc] block">
-                Gender <span className="text-[#ef4444]">*</span>
+                Gender (Optional)
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -255,7 +258,7 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
                   type="button"
                   onClick={() => {
                     soundManager.playClick();
-                    setGender('male');
+                    setGender((prev) => (prev === 'male' ? null : 'male'));
                   }}
                   className={`h-[56px] rounded-xl border flex items-center justify-center gap-2.5 px-3 transition-all cursor-pointer ${
                     gender === 'male'
@@ -272,7 +275,7 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
                   type="button"
                   onClick={() => {
                     soundManager.playClick();
-                    setGender('female');
+                    setGender((prev) => (prev === 'female' ? null : 'female'));
                   }}
                   className={`h-[56px] rounded-xl border flex items-center justify-center gap-2.5 px-3 transition-all cursor-pointer ${
                     gender === 'female'
@@ -284,9 +287,6 @@ export const StudentIntroModal: React.FC<StudentIntroModalProps> = ({
                   <span className="text-[14px] font-medium text-[#f8fafc]">Female</span>
                 </button>
               </div>
-              {gender === null && submitAttempted && (
-                <p className="text-[12px] text-[#ef4444] mt-1">Please select your gender to continue.</p>
-              )}
             </div>
 
             {/* Group & Board Grid */}

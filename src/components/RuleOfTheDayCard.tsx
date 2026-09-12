@@ -1,16 +1,51 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Sparkles, Lightbulb, ExternalLink } from 'lucide-react';
-import { getRuleOfTheDay } from '../data/grammarRules';
+import { getAdaptiveRuleOfTheDay } from '../data/grammarRules';
 import { soundManager } from '../utils/sound';
+import { AppState } from '../types';
+import { WeakSpotInfo, getWeakestSubModule, loadAppState } from '../utils/storage';
 
 interface RuleOfTheDayCardProps {
+  state?: AppState;
+  weakSpot?: WeakSpotInfo | null;
   onDrillTopic?: (topicId: string) => void;
 }
 
-export const RuleOfTheDayCard: React.FC<RuleOfTheDayCardProps> = ({ onDrillTopic }) => {
+export const RuleOfTheDayCard: React.FC<RuleOfTheDayCardProps> = ({
+  state,
+  weakSpot,
+  onDrillTopic,
+}) => {
   const [expanded, setExpanded] = useState(false);
-  const rule = getRuleOfTheDay();
-  const dayNumber = new Date().getDate();
+
+  const appState = state || loadAppState();
+  const weakest =
+    weakSpot !== undefined ? weakSpot : appState ? getWeakestSubModule(appState) : null;
+
+  let daysElapsed = 0;
+  if (appState?.user?.joinedAt) {
+    const joinTime = new Date(appState.user.joinedAt).getTime();
+    if (!isNaN(joinTime)) {
+      daysElapsed = Math.max(0, Math.floor((Date.now() - joinTime) / (1000 * 60 * 60 * 24)));
+    }
+  } else {
+    try {
+      const storedLaunch = localStorage.getItem('gramify_first_launch_date');
+      if (storedLaunch) {
+        const firstTime = new Date(storedLaunch).getTime();
+        if (!isNaN(firstTime)) {
+          daysElapsed = Math.max(0, Math.floor((Date.now() - firstTime) / (1000 * 60 * 60 * 24)));
+        }
+      } else {
+        localStorage.setItem('gramify_first_launch_date', new Date().toISOString());
+      }
+    } catch (_) {}
+  }
+
+  const rule = getAdaptiveRuleOfTheDay({
+    daysElapsed,
+    weakSpot: weakest,
+  });
 
   const handleToggle = () => {
     soundManager.playClick();
@@ -29,8 +64,8 @@ export const RuleOfTheDayCard: React.FC<RuleOfTheDayCardProps> = ({ onDrillTopic
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-[10px] font-semibold uppercase text-cyan-400 bg-cyan-950/60 px-1.5 py-0.2 rounded border border-cyan-500/20">
-                Rule of the Day • Day {dayNumber}
+              <span className="text-[10px] font-semibold uppercase text-cyan-400 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/20">
+                Rule of the Day
               </span>
               <span className="text-[10px] text-slate-400 truncate">
                 {rule.topicName}

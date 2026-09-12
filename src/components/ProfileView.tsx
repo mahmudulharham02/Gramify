@@ -196,23 +196,27 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
           {/* Avatar Trigger Button */}
           <div className="flex flex-col items-center shrink-0">
+            <span className="text-[12px] font-semibold text-white block mb-1.5">
+              Avatar
+            </span>
             <div className="relative">
               <button
                 id="btn-profile-avatar-picker"
                 type="button"
+                aria-label="Choose your avatar"
                 onClick={() => {
                   soundManager.playClick();
                   setShowPicker(true);
                 }}
                 className="
                   w-20 h-20 rounded-full
-                  bg-slate-700/50 border-2 border-white/10
-                  hover:border-cyan-400 hover:bg-slate-700
+                  bg-slate-700/50 border-2 border-white/20
+                  hover:border-cyan-400 hover:bg-slate-700 hover:ring-2 hover:ring-cyan-400/30
+                  focus:outline-none focus:ring-2 focus:ring-cyan-400/50
                   flex items-center justify-center
                   text-4xl
                   transition-all active:scale-95 cursor-pointer
                 "
-                title="Tap to change avatar"
               >
                 {resolveAvatar(state.user.avatar)}
               </button>
@@ -220,7 +224,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 Lvl {state.level}
               </div>
             </div>
-            <p className="text-xs text-slate-400 mt-1">Tap to change</p>
           </div>
 
           {/* Profile Info */}
@@ -305,9 +308,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 <span className="text-xs">
                   {state.user.gender === 'male' ? '🚹' : state.user.gender === 'female' ? '🚺' : '👤'}
                 </span>
-                <span className="text-xs text-slate-300">
-                  {state.user.gender === 'male' ? 'Male' : state.user.gender === 'female' ? 'Female' : 'Not set'}
-                </span>
+                {state.user.gender === 'male' ? (
+                  <span className="text-xs text-slate-300">Male</span>
+                ) : state.user.gender === 'female' ? (
+                  <span className="text-xs text-slate-300">Female</span>
+                ) : (
+                  <span className="text-xs text-slate-500 italic">Not set</span>
+                )}
               </div>
             </div>
           </div>

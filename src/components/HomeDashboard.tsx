@@ -577,7 +577,11 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
       {/* ZONE 5 — RULE OF THE DAY                                                  */}
       {/* ========================================================================= */}
       <section id="rule-of-the-day-section">
-        <RuleOfTheDayCard onDrillTopic={(topicId) => onNavigate('game', { topicId })} />
+        <RuleOfTheDayCard
+          state={state}
+          weakSpot={weakestSubModule}
+          onDrillTopic={(topicId) => onNavigate('game', { topicId })}
+        />
       </section>
     </div>
   );

@@ -360,3 +360,55 @@ export function getRuleOfTheDay(dayOfMonth?: number): GrammarRule {
   const index = Math.abs((day - 1) % GRAMMAR_RULES_BANK.length);
   return GRAMMAR_RULES_BANK[index] || GRAMMAR_RULES_BANK[0];
 }
+
+export interface AdaptiveRuleOptions {
+  daysElapsed?: number;
+  weakSpot?: {
+    topicId: string;
+    subModuleName?: string;
+    subModuleId?: string;
+  } | null;
+}
+
+export function getAdaptiveRuleOfTheDay(options?: AdaptiveRuleOptions): GrammarRule {
+  const seedCount = GRAMMAR_RULES_BANK.length;
+  const daysElapsed = options?.daysElapsed ?? 0;
+  const weakSpot = options?.weakSpot;
+
+  // If still within seed rule bank (days 0 to seedCount - 1), show sequential seed rule
+  if (daysElapsed < seedCount) {
+    const index = Math.abs(daysElapsed % seedCount);
+    return GRAMMAR_RULES_BANK[index] || GRAMMAR_RULES_BANK[0];
+  }
+
+  // When seed bank runs out (or after fixed number of days):
+  // 1. Switch to a rule based on the user's weakest grammar sub-module (tied to Smart Practice)
+  if (weakSpot && weakSpot.topicId) {
+    const matchingRules = GRAMMAR_RULES_BANK.filter((r) => {
+      if (r.topicId === weakSpot.topicId) return true;
+      const weakName = (weakSpot.subModuleName || '').toLowerCase();
+      const ruleTopic = (r.topicName || '').toLowerCase();
+      const ruleTitle = (r.title || '').toLowerCase();
+      if (
+        weakName &&
+        (ruleTopic.includes(weakName) ||
+          weakName.includes(ruleTopic) ||
+          ruleTitle.includes(weakName))
+      ) {
+        return true;
+      }
+      return false;
+    });
+
+    if (matchingRules.length > 0) {
+      const daySeed = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+      return matchingRules[daySeed % matchingRules.length];
+    }
+  }
+
+  // 2. If no weak spot exists yet, fall back to a random rule from the bank (stable for today)
+  const daySeed = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+  const randomIndex = Math.abs((daySeed * 17 + 11) % seedCount);
+  return GRAMMAR_RULES_BANK[randomIndex] || GRAMMAR_RULES_BANK[0];
+}
+
