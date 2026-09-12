@@ -40,7 +40,7 @@ export const TOPICS_DATA: TopicInfo[] = [
   {
     id: 'articles',
     number: 2,
-    title: 'Articles (A / An / The / Zero)',
+    title: 'Articles',
     bengaliTitle: 'আর্টিকেল (A, An, The ও Zero Article)',
     marks: 5,
     icon: '🎯',
@@ -72,7 +72,7 @@ export const TOPICS_DATA: TopicInfo[] = [
   {
     id: 'preposition',
     number: 3,
-    title: 'Prepositions & Appropriate Prepositions',
+    title: 'Prepositions',
     bengaliTitle: 'উপযুক্ত প্রিপজিশন (Appropriate Prepositions)',
     marks: 7,
     icon: '📍',
@@ -105,7 +105,7 @@ export const TOPICS_DATA: TopicInfo[] = [
   {
     id: 'completing_sentences',
     number: 4,
-    title: 'Completing Sentences (Clauses & Phrases)',
+    title: 'Completing Sentences',
     bengaliTitle: 'বাক্য সম্পূর্ণকরণ (Completing Sentences)',
     marks: 7,
     icon: '🧩',
@@ -139,7 +139,7 @@ export const TOPICS_DATA: TopicInfo[] = [
   {
     id: 'connectors',
     number: 5,
-    title: 'Sentence Connectors & Linkers',
+    title: 'Sentence Connectors',
     bengaliTitle: 'সেন্টেন্স কানেক্টরস ও লিঙ্কার্স (Connectors)',
     marks: 7,
     icon: '🔗',
@@ -236,8 +236,8 @@ export const TOPICS_DATA: TopicInfo[] = [
   {
     id: 'changing_sentences',
     number: 9,
-    title: 'Changing Sentences (Transformation)',
-    bengaliTitle: 'বাক্য পরিবর্তন (Changing Sentences ⭐ 10 Marks)',
+    title: 'Changing Sentences',
+    bengaliTitle: 'বাক্য পরিবর্তন (Changing Sentences 10 Marks)',
     marks: 10,
     icon: '👑',
     accentColor: '#a3e635',
